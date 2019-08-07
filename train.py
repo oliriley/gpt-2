@@ -16,7 +16,7 @@ from load_dataset import load_dataset, Sampler
 from accumulate import AccumulatingOptimizer
 import memory_saving_gradients
 
-CHECKPOINT_DIR = '../drive/My\ Drive/Colab/checkpoint'
+CHECKPOINT_DIR = '/content/drive/My\ Drive/Colab/checkpoint'
 SAMPLE_DIR = 'samples'
 
 parser = argparse.ArgumentParser(
