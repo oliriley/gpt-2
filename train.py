@@ -251,7 +251,7 @@ def main():
         start_time = time.time()
 
         try:
-            while !(counter % args.outer_loop_steps==0):
+            while not (counter % args.outer_loop_steps==0):
                 if counter % args.save_every == 0:
                     save()
                 if counter % args.sample_every == 0:
