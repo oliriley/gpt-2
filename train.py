@@ -16,9 +16,8 @@ from load_dataset import load_dataset, Sampler
 from accumulate import AccumulatingOptimizer
 import memory_saving_gradients
 
-CHECKPOINT_DIR = 'checkpoint'
+CHECKPOINT_DIR = '../drive/My\ Drive/Colab/checkpoint'
 SAMPLE_DIR = 'samples'
-
 
 parser = argparse.ArgumentParser(
     description='Fine-tune GPT-2 on your custom dataset.',
@@ -80,7 +79,7 @@ def main():
             "Can't get samples longer than window size: %s" % hparams.n_ctx)
 
     if args.model_name == '345M':
-        args.memory_saving_gradients = True
+        args.memory_saving_gradients = False
         if args.optimizer == 'adam':
             args.only_train_transformer_layers = True
 
@@ -150,8 +149,8 @@ def main():
 
         saver = tf.train.Saver(
             var_list=all_vars,
-            max_to_keep=5,
-            keep_checkpoint_every_n_hours=2)
+            max_to_keep=2,
+            keep_checkpoint_every_n_hours=1)
         sess.run(tf.global_variables_initializer())
 
         if args.restore_from == 'latest':
