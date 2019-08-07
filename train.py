@@ -16,7 +16,7 @@ from load_dataset import load_dataset, Sampler
 from accumulate import AccumulatingOptimizer
 import memory_saving_gradients
 
-CHECKPOINT_DIR = '/content/drive/My\ Drive/Colab/checkpoint'
+CHECKPOINT_DIR = 'checkpoint'
 SAMPLE_DIR = 'samples'
 
 parser = argparse.ArgumentParser(
@@ -44,6 +44,7 @@ parser.add_argument('--sample_every', metavar='N', type=int, default=100, help='
 parser.add_argument('--sample_length', metavar='TOKENS', type=int, default=1023, help='Sample this many tokens')
 parser.add_argument('--sample_num', metavar='N', type=int, default=1, help='Generate this many samples')
 parser.add_argument('--save_every', metavar='N', type=int, default=1000, help='Write a checkpoint every N steps')
+parser.add_argument('--outer_loop_steps', metavar='N', type=int, default=10000, help='Pause training to save checkpoints to Colab after N steps')
 
 parser.add_argument('--val_dataset', metavar='PATH', type=str, default=None, help='Dataset for validation loss, defaults to --dataset.')
 parser.add_argument('--val_batch_size', metavar='SIZE', type=int, default=2, help='Batch size for validation.')
@@ -250,7 +251,7 @@ def main():
         start_time = time.time()
 
         try:
-            while True:
+            while !(counter % args.outer_loop_steps==0):
                 if counter % args.save_every == 0:
                     save()
                 if counter % args.sample_every == 0:
