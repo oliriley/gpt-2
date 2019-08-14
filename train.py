@@ -251,7 +251,8 @@ def main():
         start_time = time.time()
 
         try:
-            while not (counter % args.outer_loop_steps==0):
+            max_counter = counter +  args.outer_loop_steps
+            while counter < max_counter
                 if counter % args.save_every == 0:
                     save()
                 if counter % args.sample_every == 0:
@@ -284,10 +285,10 @@ def main():
                         avg=avg_loss[0] / avg_loss[1]))
 
                 counter += 1
+            save()
         except KeyboardInterrupt:
             print('interrupted')
             save()
-
 
 if __name__ == '__main__':
     main()
