@@ -252,7 +252,7 @@ def main():
 
         try:
             max_counter = counter +  args.outer_loop_steps
-            while counter < max_counter
+            while max_counter > counter:
                 if counter % args.save_every == 0:
                     save()
                 if counter % args.sample_every == 0:
