@@ -30,8 +30,8 @@ parser.add_argument('--combine', metavar='CHARS', type=int, default=50000, help=
 parser.add_argument('--batch_size', metavar='SIZE', type=int, default=1, help='Batch size')
 parser.add_argument('--learning_rate', metavar='LR', type=float, default=0.00002, help='Learning rate for Adam')
 parser.add_argument('--accumulate_gradients', metavar='N', type=int, default=1, help='Accumulate gradients across N minibatches.')
-parser.add_argument('--memory_saving_gradients', default=False, action='store_true', help='Use gradient checkpointing to reduce vram usage.')
-parser.add_argument('--only_train_transformer_layers', default=False, action='store_true', help='Restrict training to the transformer blocks.')
+parser.add_argument('--memory_saving_gradients', type=bool, default=False, action='store_true', help='Use gradient checkpointing to reduce vram usage.')
+parser.add_argument('--only_train_transformer_layers', type=bool, default=False, action='store_true', help='Restrict training to the transformer blocks.')
 parser.add_argument('--optimizer', type=str, default='adam', help='Optimizer. <adam|sgd>.')
 parser.add_argument('--noise', type=float, default=0.0, help='Add noise to input training data to regularize against typos.')
 
@@ -83,6 +83,11 @@ def main():
         args.memory_saving_gradients = True
         if args.optimizer == 'adam':
             args.only_train_transformer_layers = True
+            
+    if args.model_name == '774M': # use full memory savings
+        args.memory_saving_gradients = True
+        args.optimizer == 'sgd'
+        args.only_train_transformer_layers = True
 
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
