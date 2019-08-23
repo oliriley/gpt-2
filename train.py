@@ -89,10 +89,10 @@ def main():
         args.optimizer == 'sgd'
         args.only_train_transformer_layers = True
 
-    config = tf.ConfigProto()
+    config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
     config.graph_options.rewrite_options.layout_optimizer = rewriter_config_pb2.RewriterConfig.OFF
-    with tf.Session(config=config) as sess:
+    with tf.compat.v1.Session(config=config) as sess:
         context = tf.placeholder(tf.int32, [args.batch_size, None])
         context_in = randomize(context, hparams, args.noise)
         output = model.model(hparams=hparams, X=context_in)
