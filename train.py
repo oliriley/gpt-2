@@ -60,7 +60,7 @@ def maketree(path):
 def randomize(context, hparams, p):
     if p > 0:
         mask = tf.random.uniform(shape=tf.shape(context)) < p
-        noise = tf.random.uniform(shape=tf.shape(context), minval=0, maxval=hparams.n_vocab, dtype=tf.int16)
+        noise = tf.random.uniform(shape=tf.shape(context), minval=0, maxval=hparams.n_vocab, dtype=tf.int32)
         return tf.where(mask, noise, context)
     else:
         return context
@@ -90,7 +90,7 @@ def main():
     config.gpu_options.allow_growth = True
     config.graph_options.rewrite_options.layout_optimizer = rewriter_config_pb2.RewriterConfig.OFF
     with tf.compat.v1.Session(config=config) as sess:
-        context = tf.compat.v1.placeholder(tf.int16, [args.batch_size, None])
+        context = tf.compat.v1.placeholder(tf.int32, [args.batch_size, None])
         context_in = randomize(context, hparams, args.noise)
         output = model.model(hparams=hparams, X=context_in)
         loss = tf.reduce_mean(
@@ -98,7 +98,7 @@ def main():
                 labels=context[:, 1:], logits=output['logits'][:, :-1]))
 
         if args.val_every > 0:
-            val_context = tf.compat.v1.placeholder(tf.int16, [args.val_batch_size, None])
+            val_context = tf.compat.v1.placeholder(tf.int32, [args.val_batch_size, None])
             val_output = model.model(hparams=hparams, X=val_context)
             val_loss = tf.reduce_mean(
                 tf.nn.sparse_softmax_cross_entropy_with_logits(
