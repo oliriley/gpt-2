@@ -21,9 +21,8 @@ def top_k_logits(logits, k):
        lambda: _top_k(),
     )
 
-
 def top_p_logits(logits, p):
-    with tf.variable_scope('top_p_logits'):
+    with tf.compat.v1.variable_scope('top_p_logits'):
         logits_sort = tf.sort(logits, direction='DESCENDING')
         probs_sort = tf.nn.softmax(logits_sort)
         probs_sums = tf.cumsum(probs_sort, axis=1, exclusive=True)
@@ -34,7 +33,6 @@ def top_p_logits(logits, p):
             tf.ones_like(logits, dtype=logits.dtype) * -1e10,
             logits,
         )
-
 
 def sample_sequence(*, hparams, length, start_token=None, batch_size=None, context=None, temperature=1, top_k=0, top_p=0.0):
     if start_token is None:
@@ -62,7 +60,7 @@ def sample_sequence(*, hparams, length, start_token=None, batch_size=None, conte
 
         def body(past, prev, output):
             next_outputs = step(hparams, prev[:, tf.newaxis], past=past)
-            logits = next_outputs['logits'][:, -1, :]  / tf.to_float(temperature)
+            logits = next_outputs['logits'][:, -1, :]  / tf.v1.compat.to_float(temperature)
             if top_p > 0.0:
                 logits = top_p_logits(logits, p=top_p)
             else:
