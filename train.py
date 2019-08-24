@@ -114,7 +114,7 @@ def main():
             top_k=args.top_k,
             top_p=args.top_p)
 
-        all_vars = [v for v in tf.trainable_variables() if 'model' in v.name]
+        all_vars = [v for v in tf.compat.v1.trainable_variables() if 'model' in v.name]
         train_vars = [v for v in all_vars if '/h' in v.name] if args.only_train_transformer_layers else all_vars
 
         if args.optimizer == 'adam':
