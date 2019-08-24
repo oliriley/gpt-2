@@ -133,7 +133,7 @@ def main():
             opt_reset = opt.reset()
             opt_compute = opt.compute_gradients(loss)
             opt_apply = opt.apply_gradients()
-            summary_loss = tf.summary.scalar('loss', opt_apply)
+            summary_loss = tf.compat.v1.summary.scalar('loss', opt_apply)
         else:
             if args.memory_saving_gradients:
                 opt_grads = memory_saving_gradients.gradients(loss, train_vars)
@@ -141,7 +141,7 @@ def main():
                 opt_grads = tf.gradients(loss, train_vars)
             opt_grads = list(zip(opt_grads, train_vars))
             opt_apply = opt.apply_gradients(opt_grads)
-            summary_loss = tf.summary.scalar('loss', loss)
+            summary_loss = tf.compat.v1.summary.scalar('loss', loss)
 
         summary_lr = tf.compat.v1.summary.scalar('learning_rate', args.learning_rate)
         summaries = tf.compat.v1.summary.merge([summary_lr, summary_loss])
@@ -153,7 +153,7 @@ def main():
             var_list=all_vars,
             max_to_keep=1,
             keep_checkpoint_every_n_hours=1)
-        sess.run(tf.global_variables_initializer())
+        sess.run(tf.compat.v1.global_variables_initializer())
 
         if args.restore_from == 'latest':
             ckpt = tf.train.latest_checkpoint(
