@@ -91,7 +91,7 @@ def attn(x, scope, n_state, *, past, hparams):
     def multihead_attn(q, k, v):
         # q, k, v have shape [batch, heads, sequence, features]
         w = tf.matmul(q, k, transpose_b=True)
-        w = w * tf.rsqrt(tf.cast(v.shape[-1].value, w.dtype))
+        w = w * tf.math.rsqrt(tf.cast(v.shape[-1].value, w.dtype))
 
         w = mask_attn_weights(w)
         w = softmax(w)
