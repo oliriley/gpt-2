@@ -10,7 +10,7 @@ import tensorflow as tf
 import time
 import tqdm
 from tensorflow.core.protobuf import rewriter_config_pb2
-from from keras_radam.training import RAdamOptimizer
+from keras_radam.training import RAdamOptimizer
 import model, sample, encoder
 from load_dataset import load_dataset, Sampler
 from accumulate import AccumulatingOptimizer
