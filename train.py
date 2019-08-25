@@ -10,7 +10,7 @@ import tensorflow as tf
 import time
 import tqdm
 from tensorflow.core.protobuf import rewriter_config_pb2
-
+from from keras_radam.training import RAdamOptimizer
 import model, sample, encoder
 from load_dataset import load_dataset, Sampler
 from accumulate import AccumulatingOptimizer
@@ -32,7 +32,7 @@ parser.add_argument('--learning_rate', metavar='LR', type=float, default=0.00002
 parser.add_argument('--accumulate_gradients', metavar='N', type=int, default=1, help='Accumulate gradients across N minibatches.')
 parser.add_argument('--memory_saving_gradients', default=False, action='store_true', help='Use gradient checkpointing to reduce vram usage.')
 parser.add_argument('--only_train_transformer_layers', default=False, action='store_true', help='Restrict training to the transformer blocks.')
-parser.add_argument('--optimizer', type=str, default='adam', help='Optimizer. <adam|sgd>.')
+parser.add_argument('--optimizer', type=str, default='adam', help='Optimizer. <adam|sgd|radam>.')
 parser.add_argument('--noise', type=float, default=0.0, help='Add noise to input training data to regularize against typos.')
 
 parser.add_argument('--top_k', type=int, default=40, help='K for top-k sampling.')
@@ -81,10 +81,8 @@ def main():
         if args.optimizer == 'adam':
             args.only_train_transformer_layers = True
             
-    if args.model_name == '774M': # use full memory savings
+    if args.model_name == '774M': # assumed user has access to high-RAM runtime
         args.memory_saving_gradients = True
-        args.optimizer == 'sgd'
-        args.only_train_transformer_layers = True
 
     config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
@@ -121,6 +119,8 @@ def main():
             opt = tf.compat.v1.train.AdamOptimizer(learning_rate=args.learning_rate)
         elif args.optimizer == 'sgd':
             opt = tf.train.GradientDescentOptimizer(learning_rate=args.learning_rate)
+        elif args.optimizer == 'radam':
+            opt = RAdamOptimizer(learning_rate=args.learning_rate)
         else:
             exit('Bad optimizer:', args.optimizer)
 
@@ -252,10 +252,10 @@ def main():
         start_time = time.time()
 
         try:
-            max_counter = counter +  args.outer_loop_steps
+            max_counter = counter +  args.outer_loop_steps - 1
             while max_counter > counter:
-                if counter % args.save_every == 0:
-                    save()
+                #if counter % args.save_every == 0:
+                #    save()
                 if counter % args.sample_every == 0:
                     generate_samples()
                 if args.val_every > 0 and (counter % args.val_every == 0 or counter == 1):
