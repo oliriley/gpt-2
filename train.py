@@ -76,13 +76,10 @@ def main():
         raise ValueError(
             "Can't get samples longer than window size: %s" % hparams.n_ctx)
 
-    if args.model_name == '345M':
+    if (args.model_name == '345M') or (args.model_name == '774M'):
         args.memory_saving_gradients = True
-        if args.optimizer == 'adam':
+        if (args.optimizer == 'adam') or (args.optimizer == 'radam'):
             args.only_train_transformer_layers = True
-            
-    if args.model_name == '774M': # assumed user has access to high-RAM runtime
-        args.memory_saving_gradients = True
 
     config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
