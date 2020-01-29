@@ -115,7 +115,7 @@ def main():
         if args.optimizer == 'adam':
             opt = tf.compat.v1.train.AdamOptimizer(learning_rate=args.learning_rate)
         elif args.optimizer == 'sgd':
-            opt = tf.train.GradientDescentOptimizer(learning_rate=args.learning_rate)
+            opt = tf.compat.v1.train.GradientDescentOptimizer(learning_rate=args.learning_rate)
         elif args.optimizer == 'radam':
             opt = RAdamOptimizer(learning_rate=args.learning_rate)
         else:
